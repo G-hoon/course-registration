@@ -2,6 +2,7 @@
 
 import { useState } from 'react';
 import { useForm } from 'react-hook-form';
+import { useMutation } from '@tanstack/react-query';
 import { useRouter } from 'next/navigation';
 import Link from 'next/link';
 import api from '@/lib/api';
@@ -13,7 +14,6 @@ export default function LoginPage() {
   const router = useRouter();
   const setUser = useAuthStore((state) => state.setUser);
   const [serverError, setServerError] = useState('');
-  const [loading, setLoading] = useState(false);
 
   const {
     register,
@@ -21,18 +21,14 @@ export default function LoginPage() {
     formState: { errors },
   } = useForm<LoginRequest>();
 
-  const onSubmit = async (data: LoginRequest) => {
-    setServerError('');
-    setLoading(true);
-
-    try {
-      const res = await api
-        .post('users/login', { json: data })
-        .json<LoginResponse>();
-
+  const loginMutation = useMutation({
+    mutationFn: (data: LoginRequest) =>
+      api.post('users/login', { json: data }).json<LoginResponse>(),
+    onSuccess: (res) => {
       setUser(res.accessToken, res.user);
       router.push('/courses');
-    } catch (err: unknown) {
+    },
+    onError: async (err: unknown) => {
       const error = err as { response?: Response };
       if (error.response) {
         const body = await error.response.json();
@@ -40,9 +36,12 @@ export default function LoginPage() {
       } else {
         setServerError('서버에 연결할 수 없습니다.');
       }
-    } finally {
-      setLoading(false);
-    }
+    },
+  });
+
+  const onSubmit = (data: LoginRequest) => {
+    setServerError('');
+    loginMutation.mutate(data);
   };
 
   return (
@@ -76,7 +75,7 @@ export default function LoginPage() {
           <p className="text-red-500 text-sm text-center">{serverError}</p>
         )}
 
-        <Button type="submit" loading={loading}>
+        <Button type="submit" loading={loginMutation.isPending}>
           로그인
         </Button>
 

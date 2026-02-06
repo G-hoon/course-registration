@@ -1,4 +1,5 @@
 import { create } from 'zustand';
+import { persist } from 'zustand/middleware';
 import { User } from '@/types';
 
 interface AuthStore {
@@ -8,19 +9,20 @@ interface AuthStore {
   logout: () => void;
 }
 
-export const useAuthStore = create<AuthStore>((set) => ({
-  user: null,
-  token: null,
+export const useAuthStore = create<AuthStore>()(
+  persist(
+    (set) => ({
+      user: null,
+      token: null,
 
-  setUser: (token, user) => {
-    localStorage.setItem('token', token);
-    localStorage.setItem('user', JSON.stringify(user));
-    set({ token, user });
-  },
+      setUser: (token, user) => {
+        set({ token, user });
+      },
 
-  logout: () => {
-    localStorage.removeItem('token');
-    localStorage.removeItem('user');
-    set({ token: null, user: null });
-  },
-}));
+      logout: () => {
+        set({ token: null, user: null });
+      },
+    }),
+    { name: 'auth' }
+  )
+);

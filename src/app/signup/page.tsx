@@ -2,6 +2,7 @@
 
 import { useState } from 'react';
 import { useForm } from 'react-hook-form';
+import { useMutation } from '@tanstack/react-query';
 import { useRouter } from 'next/navigation';
 import Link from 'next/link';
 import api from '@/lib/api';
@@ -14,7 +15,6 @@ export default function SignupPage() {
   const router = useRouter();
   const setUser = useAuthStore((state) => state.setUser);
   const [serverError, setServerError] = useState('');
-  const [loading, setLoading] = useState(false);
 
   const {
     register,
@@ -30,22 +30,22 @@ export default function SignupPage() {
     },
   });
 
-  const onSubmit = async (data: SignupRequest) => {
-    setServerError('');
-    setLoading(true);
-
-    try {
+  const signupMutation = useMutation({
+    mutationFn: async (data: SignupRequest) => {
       await api.post('users/signup', { json: data }).json();
 
-      const loginRes = await api
+      // 가입 후 자동 로그인
+      return api
         .post('users/login', {
           json: { email: data.email, password: data.password },
         })
         .json<LoginResponse>();
-
-      setUser(loginRes.accessToken, loginRes.user);
+    },
+    onSuccess: (res) => {
+      setUser(res.accessToken, res.user);
       router.push('/courses');
-    } catch (err: unknown) {
+    },
+    onError: async (err: unknown) => {
       const error = err as { response?: Response };
       if (error.response) {
         const body = await error.response.json();
@@ -53,9 +53,12 @@ export default function SignupPage() {
       } else {
         setServerError('서버에 연결할 수 없습니다.');
       }
-    } finally {
-      setLoading(false);
-    }
+    },
+  });
+
+  const onSubmit = (data: SignupRequest) => {
+    setServerError('');
+    signupMutation.mutate(data);
   };
 
   return (
@@ -118,7 +121,7 @@ export default function SignupPage() {
           <p className="text-red-500 text-sm text-center">{serverError}</p>
         )}
 
-        <Button type="submit" loading={loading}>
+        <Button type="submit" loading={signupMutation.isPending}>
           가입하기
         </Button>
 
