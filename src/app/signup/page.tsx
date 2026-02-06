@@ -1,7 +1,134 @@
+'use client';
+
+import { useState } from 'react';
+import { useForm } from 'react-hook-form';
+import { useRouter } from 'next/navigation';
+import Link from 'next/link';
+import api from '@/lib/api';
+import { useAuthStore } from '@/stores/authStore';
+import { validatePassword, validateEmail, validatePhone } from '@/lib/validate';
+import { Input, Button, Radio } from '@/components';
+import type { LoginResponse, SignupRequest } from '@/types';
+
 export default function SignupPage() {
+  const router = useRouter();
+  const setUser = useAuthStore((state) => state.setUser);
+  const [serverError, setServerError] = useState('');
+  const [loading, setLoading] = useState(false);
+
+  const {
+    register,
+    handleSubmit,
+    formState: { errors },
+  } = useForm<SignupRequest>({
+    defaultValues: {
+      name: '',
+      email: '',
+      phone: '',
+      password: '',
+      role: 'STUDENT',
+    },
+  });
+
+  const onSubmit = async (data: SignupRequest) => {
+    setServerError('');
+    setLoading(true);
+
+    try {
+      await api.post('users/signup', { json: data }).json();
+
+      const loginRes = await api
+        .post('users/login', {
+          json: { email: data.email, password: data.password },
+        })
+        .json<LoginResponse>();
+
+      setUser(loginRes.accessToken, loginRes.user);
+      router.push('/courses');
+    } catch (err: unknown) {
+      const error = err as { response?: Response };
+      if (error.response) {
+        const body = await error.response.json();
+        setServerError(body.message || '회원가입에 실패했습니다.');
+      } else {
+        setServerError('서버에 연결할 수 없습니다.');
+      }
+    } finally {
+      setLoading(false);
+    }
+  };
+
   return (
     <div>
-      <h1>회원 가입</h1>
+      <h1 className="page-title">회원 가입</h1>
+
+      <form onSubmit={handleSubmit(onSubmit)} className="flex flex-col gap-5">
+        <Input
+          id="name"
+          label="이름"
+          placeholder="홍길동"
+          error={errors.name?.message}
+          {...register('name', {
+            required: '이름을 입력해주세요.',
+          })}
+        />
+
+        <Input
+          id="email"
+          label="이메일"
+          type="email"
+          placeholder="hong@weolbu.com"
+          error={errors.email?.message}
+          {...register('email', {
+            validate: (v) => validateEmail(v) || true,
+          })}
+        />
+
+        <Input
+          id="phone"
+          label="휴대폰 번호"
+          type="tel"
+          placeholder="010-1234-5678"
+          error={errors.phone?.message}
+          {...register('phone', {
+            validate: (v) => validatePhone(v) || true,
+          })}
+        />
+
+        <Input
+          id="password"
+          label="비밀번호"
+          type="password"
+          placeholder="영문, 숫자 조합 6~10자"
+          error={errors.password?.message}
+          {...register('password', {
+            validate: (v) => validatePassword(v) || true,
+          })}
+        />
+
+        <div>
+          <p className="text-sm font-medium mb-2">회원 유형</p>
+          <div className="flex gap-6">
+            <Radio label="수강생" value="STUDENT" {...register('role')} />
+            <Radio label="강사" value="INSTRUCTOR" {...register('role')} />
+          </div>
+        </div>
+
+        {serverError && (
+          <p className="text-red-500 text-sm text-center">{serverError}</p>
+        )}
+
+        <Button type="submit" loading={loading}>
+          가입하기
+        </Button>
+
+        <p className="text-center text-sm text-gray-500">
+          이미 계정이 있으신가요?{' '}
+          <Link href="/login" className="text-primary hover:underline">
+            로그인
+          </Link>
+        </p>
+      </form>
     </div>
   );
 }
