@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import localFont from "next/font/local";
 import Providers from "./providers";
+import { Header } from "@/components";
 import "./globals.css";
 
 const pretendard = localFont({
@@ -26,6 +27,7 @@ export default function RootLayout({
         <Providers>
           <div className="min-h-screen">
             <main className="w-full max-w-[600px] h-full mx-auto px-4 py-6">
+              <Header />
               {children}
             </main>
           </div>

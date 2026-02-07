@@ -7,7 +7,7 @@ import { useRouter } from 'next/navigation';
 import Link from 'next/link';
 import api from '@/lib/api';
 import { useAuthStore } from '@/stores/authStore';
-import { Input, Button } from '@/components';
+import { Input, Button, PublicGuard } from '@/components';
 import type { LoginRequest, LoginResponse } from '@/types';
 
 export default function LoginPage() {
@@ -45,47 +45,49 @@ export default function LoginPage() {
   };
 
   return (
-    <div>
-      <h1 className="page-title">로그인</h1>
+    <PublicGuard>
+      <div>
+        <h1 className="page-title">로그인</h1>
 
-      <form onSubmit={handleSubmit(onSubmit)} className="flex flex-col gap-5">
-        <Input
-          id="email"
-          label="이메일"
-          type="email"
-          placeholder="hong@weolbu.com"
-          error={errors.email?.message}
-          {...register('email', {
-            required: '이메일을 입력해주세요.',
-          })}
-        />
+        <form onSubmit={handleSubmit(onSubmit)} className="flex flex-col gap-5">
+          <Input
+            id="email"
+            label="이메일"
+            type="email"
+            placeholder="hong@weolbu.com"
+            error={errors.email?.message}
+            {...register('email', {
+              required: '이메일을 입력해주세요.',
+            })}
+          />
 
-        <Input
-          id="password"
-          label="비밀번호"
-          type="password"
-          placeholder="비밀번호를 입력하세요"
-          error={errors.password?.message}
-          {...register('password', {
-            required: '비밀번호를 입력해주세요.',
-          })}
-        />
+          <Input
+            id="password"
+            label="비밀번호"
+            type="password"
+            placeholder="비밀번호를 입력하세요"
+            error={errors.password?.message}
+            {...register('password', {
+              required: '비밀번호를 입력해주세요.',
+            })}
+          />
 
-        {serverError && (
-          <p className="text-red-500 text-sm text-center">{serverError}</p>
-        )}
+          {serverError && (
+            <p className="text-red-500 text-sm text-center">{serverError}</p>
+          )}
 
-        <Button type="submit" loading={loginMutation.isPending}>
-          로그인
-        </Button>
+          <Button type="submit" loading={loginMutation.isPending}>
+            로그인
+          </Button>
 
-        <p className="text-center text-sm text-gray-500">
-          계정이 없으신가요?{' '}
-          <Link href="/signup" className="text-primary hover:underline">
-            회원가입
-          </Link>
-        </p>
-      </form>
-    </div>
+          <p className="text-center text-sm text-gray-500">
+            계정이 없으신가요?{' '}
+            <Link href="/signup" className="text-primary hover:underline">
+              회원가입
+            </Link>
+          </p>
+        </form>
+      </div>
+    </PublicGuard>
   );
 }
