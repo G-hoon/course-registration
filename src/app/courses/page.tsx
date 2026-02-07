@@ -97,16 +97,16 @@ export default function CoursesPage() {
         </div>
 
         {user?.role === 'INSTRUCTOR' && (
-          <Link
-            href="/courses/new"
-            className="text-center text-sm text-primary hover:underline mb-4"
+          <button
+            className="text-center text-sm text-primary hover:bg-primary-hover hover:text-white transition-colors mb-3 h-[60px] w-full bg-white border rounded-lg"
+            onClick={() => router.push('/courses/new')}
           >
-            + 새 강의 개설
-          </Link>
+            <span className="text-lg font-bold">+ 새 강의 개설</span>
+          </button>
         )}
 
         {enrollResult && (
-          <div className="mb-4 p-3 rounded-lg bg-white border text-sm">
+          <div className={`mb-4 p-3 rounded-lg text-center bg-white border text-sm ${enrollResult.success.length > 0 ? 'text-green-600' : 'text-red-500'}`}>
             {enrollResult.success.length > 0 && (
               <p className="text-green-600 mb-1">
                 {enrollResult.success.map((s) => s.courseTitle).join(', ')} 신청 완료
