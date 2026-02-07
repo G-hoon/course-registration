@@ -62,6 +62,13 @@ export interface EnrollmentResult {
   }[];
 }
 
+export interface CreateCourseRequest {
+  title: string;
+  instructorName: string;
+  maxStudents: number;
+  price: number;
+}
+
 export interface ApiError {
   code: string;
   message: string;

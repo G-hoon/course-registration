@@ -21,6 +21,7 @@ export default function SignupPage() {
     handleSubmit,
     formState: { errors },
   } = useForm<SignupRequest>({
+    mode: 'onTouched',
     defaultValues: {
       name: '',
       email: '',
@@ -70,6 +71,7 @@ export default function SignupPage() {
           <Input
             id="name"
             label="이름"
+            required
             placeholder="홍길동"
             error={errors.name?.message}
             {...register('name', {
@@ -80,6 +82,7 @@ export default function SignupPage() {
           <Input
             id="email"
             label="이메일"
+            required
             type="email"
             placeholder="hong@weolbu.com"
             error={errors.email?.message}
@@ -91,6 +94,7 @@ export default function SignupPage() {
           <Input
             id="phone"
             label="휴대폰 번호"
+            required
             type="tel"
             placeholder="010-1234-5678"
             error={errors.phone?.message}
@@ -102,6 +106,7 @@ export default function SignupPage() {
           <Input
             id="password"
             label="비밀번호"
+            required
             type="password"
             placeholder="영문, 숫자 조합 6~10자"
             error={errors.password?.message}
