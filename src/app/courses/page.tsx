@@ -2,6 +2,7 @@
 
 import { Suspense, useState } from 'react';
 import { useQueryClient } from '@tanstack/react-query';
+import { motion } from 'framer-motion';
 import { useRouter } from 'next/navigation';
 import { useAuthStore } from '@/stores/authStore';
 import { useModalStore } from '@/stores/modalStore';
@@ -73,45 +74,49 @@ export default function CoursesPage() {
   };
 
   return (
-      <div className="flex flex-col h-full">
-        <h1 className="page-title">강의 목록</h1>
+    <div className="flex flex-col h-full">
+      <h1 className="page-title">강의 목록</h1>
 
-        {/* 정렬 */}
-        <div className="flex gap-4 mb-4">
-          {SORT_OPTIONS.map((opt) => (
-            <Radio
-              key={opt.value}
-              name="sort"
-              label={opt.label}
-              value={opt.value}
-              checked={sort === opt.value}
-              onChange={() => handleSortChange(opt.value)}
-            />
-          ))}
-        </div>
-
-        {user?.role === 'INSTRUCTOR' && (
-          <button
-            className="text-center text-sm text-primary hover:bg-primary-hover hover:text-white transition-colors mb-3 h-[60px] w-full bg-white border rounded-lg"
-            onClick={() => router.push('/courses/new')}
-          >
-            <span className="text-lg font-bold">+ 새 강의 개설</span>
-          </button>
-        )}
-
-        {/* 강의 목록 */}
-        <Suspense key={sort} fallback={<CourseListSkeleton length={10} />}>
-          <CourseList sort={sort} selectedIds={selectedIds} onToggle={toggleSelect} />
-        </Suspense>
-
-        {/* 수강 신청 버튼 */}
-        {selectedIds.size > 0 && (
-          <div className="sticky bottom-0 pt-3 pb-2 bg-[#f5f5f5]">
-            <Button onClick={handleEnroll}>
-              수강 신청하기 ({selectedIds.size}개)
-            </Button>
-          </div>
-        )}
+      {/* 정렬 */}
+      <div className="flex gap-4 mb-4">
+        {SORT_OPTIONS.map((opt) => (
+          <Radio
+            key={opt.value}
+            name="sort"
+            label={opt.label}
+            value={opt.value}
+            checked={sort === opt.value}
+            onChange={() => handleSortChange(opt.value)}
+          />
+        ))}
       </div>
+
+      {user?.role === 'INSTRUCTOR' && (
+
+        <motion.button
+          initial={{ height: 0, opacity: 0, padding: 0 }}
+          animate={{ height: 100, opacity: 1, padding: 16 }}
+          transition={{ duration: 0.6, ease: 'easeOut' }}
+          className="text-center text-sm text-primary hover:bg-primary-hover hover:text-white transition-colors w-full bg-white border rounded-lg  mb-3"
+          onClick={() => router.push('/courses/new')}
+        >
+          <motion.span initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ duration: 0.6, ease: 'easeOut' }} className="text-lg font-bold">+ 새 강의 개설</motion.span>
+        </motion.button>
+      )}
+
+      {/* 강의 목록 */}
+      <Suspense key={sort} fallback={<CourseListSkeleton length={10} />}>
+        <CourseList sort={sort} selectedIds={selectedIds} onToggle={toggleSelect} />
+      </Suspense>
+
+      {/* 수강 신청 버튼 */}
+      {selectedIds.size > 0 && (
+        <div className="sticky bottom-0 pt-3 pb-2 bg-[#f5f5f5]">
+          <Button onClick={handleEnroll}>
+            수강 신청하기 ({selectedIds.size}개)
+          </Button>
+        </div>
+      )}
+    </div>
   );
 }
