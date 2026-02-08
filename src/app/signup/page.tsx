@@ -5,11 +5,11 @@ import { useForm } from 'react-hook-form';
 import { useMutation } from '@tanstack/react-query';
 import { useRouter } from 'next/navigation';
 import Link from 'next/link';
-import api from '@/lib/api';
+import { signup } from '@/lib/api';
 import { setSignupCredentials } from '@/lib/signupCredentials';
 import { validatePassword, validateEmail, validatePhone } from '@/lib/validate';
 import { formatPhone } from '@/lib/format';
-import { Input, PasswordInput, Button, Radio, PublicGuard } from '@/components';
+import { Input, PasswordInput, Button, Radio } from '@/components';
 import type { SignupRequest } from '@/types';
 
 export default function SignupPage() {
@@ -32,8 +32,7 @@ export default function SignupPage() {
   });
 
   const signupMutation = useMutation({
-    mutationFn: (data: SignupRequest) =>
-      api.post('users/signup', { json: data }).json(),
+    mutationFn: (data: SignupRequest) => signup(data),
     onSuccess: (_, data) => {
       setSignupCredentials(data.email, data.password);
       router.push('/signup/complete');
@@ -59,7 +58,6 @@ export default function SignupPage() {
   };
 
   return (
-    <PublicGuard>
       <div>
         <h1 className="page-title">회원 가입</h1>
 
@@ -136,6 +134,5 @@ export default function SignupPage() {
           </p>
         </form>
       </div>
-    </PublicGuard>
   );
 }

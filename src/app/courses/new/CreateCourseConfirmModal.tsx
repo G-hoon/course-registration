@@ -4,29 +4,24 @@ import { useState } from 'react';
 import { useMutation } from '@tanstack/react-query';
 import { useRouter } from 'next/navigation';
 import toast from 'react-hot-toast';
-import { getAuthApi } from '@/lib/api';
+import { createCourse } from '@/lib/api';
 import { Button } from '@/components';
 import type { ModalComponentProps } from '@/types/modal';
-import type { CreateCourseRequest, Course } from '@/types';
+import type { CreateCourseRequest } from '@/types';
 
 interface Props {
   data: CreateCourseRequest;
-  token: string;
 }
 
 export default function CreateCourseConfirmModal({
   data,
-  token,
   onClose,
 }: ModalComponentProps<Props>) {
   const router = useRouter();
   const [error, setError] = useState('');
 
   const createMutation = useMutation({
-    mutationFn: () => {
-      const authApi = getAuthApi(token);
-      return authApi.post('courses', { json: data }).json<Course>();
-    },
+    mutationFn: () => createCourse(data),
     onSuccess: () => {
       toast.success('강의가 성공적으로 개설되었습니다.');
       router.push('/courses');

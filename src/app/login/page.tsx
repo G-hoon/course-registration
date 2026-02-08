@@ -1,19 +1,28 @@
 'use client';
 
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { useMutation } from '@tanstack/react-query';
 import { useRouter } from 'next/navigation';
 import Link from 'next/link';
-import api from '@/lib/api';
+import toast from 'react-hot-toast';
+import { login } from '@/lib/api';
 import { useAuthStore } from '@/stores/authStore';
-import { Input, PasswordInput, Button, PublicGuard } from '@/components';
-import type { LoginRequest, LoginResponse } from '@/types';
+import { Input, PasswordInput, Button } from '@/components';
+import type { LoginRequest } from '@/types';
 
 export default function LoginPage() {
   const router = useRouter();
   const setUser = useAuthStore((state) => state.setUser);
   const [serverError, setServerError] = useState('');
+
+  useEffect(() => {
+    const params = new URLSearchParams(window.location.search);
+    if (params.get('reason') === 'unauthenticated') {
+      toast.error('로그인 후 이용해주세요.');
+      window.history.replaceState(null, '', '/login');
+    }
+  }, []);
 
   const {
     register,
@@ -22,8 +31,7 @@ export default function LoginPage() {
   } = useForm<LoginRequest>();
 
   const loginMutation = useMutation({
-    mutationFn: (data: LoginRequest) =>
-      api.post('users/login', { json: data }).json<LoginResponse>(),
+    mutationFn: (data: LoginRequest) => login(data),
     onSuccess: (res) => {
       setUser(res.accessToken, res.user);
       router.push('/courses');
@@ -45,7 +53,6 @@ export default function LoginPage() {
   };
 
   return (
-    <PublicGuard>
       <div>
         <h1 className="page-title">로그인</h1>
 
@@ -91,6 +98,5 @@ export default function LoginPage() {
           </p>
         </form>
       </div>
-    </PublicGuard>
   );
 }

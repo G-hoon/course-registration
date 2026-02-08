@@ -3,7 +3,7 @@
 import { useForm } from 'react-hook-form';
 import { useAuthStore } from '@/stores/authStore';
 import { useModalStore } from '@/stores/modalStore';
-import { Input, Button, AuthGuard } from '@/components';
+import { Input, Button } from '@/components';
 import { formatNumber, parseNumber } from '@/lib/format';
 import CreateCourseConfirmModal from './CreateCourseConfirmModal';
 
@@ -14,7 +14,7 @@ interface CourseFormValues {
 }
 
 export default function NewCoursePage() {
-  const { user, token } = useAuthStore();
+  const user = useAuthStore((s) => s.user);
   const showModal = useModalStore((s) => s.showModal);
 
   const {
@@ -40,7 +40,6 @@ export default function NewCoursePage() {
           maxStudents: parseNumber(data.maxStudents),
           price: parseNumber(data.price),
         },
-        token: token!,
       },
     });
   };
@@ -66,7 +65,6 @@ export default function NewCoursePage() {
   });
 
   return (
-    <AuthGuard>
       <div>
         <h1 className="page-title">강의 개설</h1>
 
@@ -117,6 +115,5 @@ export default function NewCoursePage() {
           </Button>
         </form>
       </div>
-    </AuthGuard>
   );
 }

@@ -14,6 +14,10 @@ export interface SignupRequest {
   role: 'STUDENT' | 'INSTRUCTOR';
 }
 
+export interface SignupResponse extends User {
+  message: string;
+}
+
 export interface LoginRequest {
   email: string;
   password: string;

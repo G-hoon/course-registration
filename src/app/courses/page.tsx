@@ -5,7 +5,7 @@ import { useQueryClient } from '@tanstack/react-query';
 import { useRouter } from 'next/navigation';
 import { useAuthStore } from '@/stores/authStore';
 import { useModalStore } from '@/stores/modalStore';
-import { Radio, Button, AuthGuard } from '@/components';
+import { Radio, Button } from '@/components';
 import CourseCardSkeleton from './CourseCardSkeleton';
 import CourseList from './CourseList';
 import EnrollConfirmModal from './EnrollConfirmModal';
@@ -33,7 +33,7 @@ function CourseListSkeleton({ length = 10 }: { length?: number }) {
 export default function CoursesPage() {
   const router = useRouter();
   const queryClient = useQueryClient();
-  const { user, token } = useAuthStore();
+  const user = useAuthStore((s) => s.user);
   const showModal = useModalStore((s) => s.showModal);
 
   const [sort, setSort] = useState<SortType>('recent');
@@ -64,7 +64,6 @@ export default function CoursesPage() {
       component: EnrollConfirmModal,
       props: {
         courses: selectedCourses,
-        token: token!,
         onSuccess: () => {
           setSelectedIds(new Set());
           queryClient.invalidateQueries({ queryKey: ['courses'] });
@@ -74,7 +73,6 @@ export default function CoursesPage() {
   };
 
   return (
-    <AuthGuard>
       <div className="flex flex-col h-full">
         <h1 className="page-title">강의 목록</h1>
 
@@ -114,6 +112,5 @@ export default function CoursesPage() {
           </div>
         )}
       </div>
-    </AuthGuard>
   );
 }

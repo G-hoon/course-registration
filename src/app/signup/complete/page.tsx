@@ -4,14 +4,13 @@ import { useEffect, useState } from 'react';
 import { useMutation } from '@tanstack/react-query';
 import { useRouter } from 'next/navigation';
 import { CircleCheckBig } from 'lucide-react';
-import api from '@/lib/api';
+import { login } from '@/lib/api';
 import { useAuthStore } from '@/stores/authStore';
 import {
   getSignupCredentials,
   clearSignupCredentials,
 } from '@/lib/signupCredentials';
 import { Button } from '@/components';
-import type { LoginResponse } from '@/types';
 
 export default function SignupCompletePage() {
   const router = useRouter();
@@ -27,11 +26,7 @@ export default function SignupCompletePage() {
 
   const loginMutation = useMutation({
     mutationFn: () =>
-      api
-        .post('users/login', {
-          json: { email: credentials!.email, password: credentials!.password },
-        })
-        .json<LoginResponse>(),
+      login({ email: credentials!.email, password: credentials!.password }),
     onSuccess: (res) => {
       setUser(res.accessToken, res.user);
       router.push('/courses');

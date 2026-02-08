@@ -2,11 +2,9 @@
 
 import { useCallback } from 'react';
 import { useSuspenseInfiniteQuery } from '@tanstack/react-query';
-import api from '@/lib/api';
+import { getCourses } from '@/lib/api';
 import { useIntersectionObserver } from '@/hooks/useIntersectionObserver';
 import CourseCard from './CourseCard';
-import type { CourseListResponse } from '@/types';
-
 const PAGE_SIZE = 10;
 
 interface CourseListProps {
@@ -20,11 +18,7 @@ export default function CourseList({ sort, selectedIds, onToggle }: CourseListPr
     useSuspenseInfiniteQuery({
       queryKey: ['courses', sort],
       queryFn: ({ pageParam = 0 }) =>
-        api
-          .get('courses', {
-            searchParams: { page: pageParam, size: PAGE_SIZE, sort },
-          })
-          .json<CourseListResponse>(),
+        getCourses({ page: pageParam, size: PAGE_SIZE, sort }),
       getNextPageParam: (lastPage) =>
         lastPage.last ? undefined : lastPage.pageable.pageNumber + 1,
       initialPageParam: 0,

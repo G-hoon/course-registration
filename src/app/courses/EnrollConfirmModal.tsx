@@ -3,20 +3,18 @@
 import { useState } from 'react';
 import { useMutation } from '@tanstack/react-query';
 import toast from 'react-hot-toast';
-import { getAuthApi } from '@/lib/api';
+import { enrollBatch } from '@/lib/api';
 import { Button } from '@/components';
 import type { ModalComponentProps } from '@/types/modal';
 import type { Course, EnrollmentResult } from '@/types';
 
 interface Props {
   courses: Course[];
-  token: string;
   onSuccess: () => void;
 }
 
 export default function EnrollConfirmModal({
   courses,
-  token,
   onSuccess,
   onClose,
 }: ModalComponentProps<Props>) {
@@ -24,13 +22,7 @@ export default function EnrollConfirmModal({
   const [failedResults, setFailedResults] = useState<EnrollmentResult['failed']>([]);
 
   const enrollMutation = useMutation({
-    mutationFn: () => {
-      const authApi = getAuthApi(token);
-      const courseIds = courses.map((c) => c.id);
-      return authApi
-        .post('enrollments/batch', { json: { courseIds } })
-        .json<EnrollmentResult>();
-    },
+    mutationFn: () => enrollBatch(courses.map((c) => c.id)),
     onSuccess: (result) => {
       if (result.failed.length > 0) {
         setFailedResults(result.failed);
