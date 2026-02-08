@@ -1,7 +1,8 @@
 import type { Metadata } from "next";
+import { Suspense } from "react";
 import localFont from "next/font/local";
 import Providers from "./providers";
-import { Header } from "@/components";
+import { Header, ClientOnly, ModalRenderer } from "@/components";
 import "./globals.css";
 
 const pretendard = localFont({
@@ -25,12 +26,17 @@ export default function RootLayout({
     <html lang="ko" className={pretendard.variable}>
       <body>
         <Providers>
-          <div className="min-h-screen">
-            <main className="w-full max-w-[600px] h-full mx-auto px-4 py-6">
+          <div className="min-h-screen flex flex-col">
+            <main className="flex-1 flex flex-col w-full max-w-[600px] mx-auto px-4 py-6">
               <Header />
               {children}
             </main>
           </div>
+          <ClientOnly>
+            <Suspense>
+              <ModalRenderer />
+            </Suspense>
+          </ClientOnly>
         </Providers>
       </body>
     </html>

@@ -2,8 +2,11 @@
 
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { useState, ReactNode } from 'react';
+import { Toaster } from 'react-hot-toast';
+import { useViewportHeight } from '@/hooks/useViewportHeight';
 
 export default function Providers({ children }: { children: ReactNode }) {
+  useViewportHeight();
   const [queryClient] = useState(
     () =>
       new QueryClient({
@@ -19,6 +22,7 @@ export default function Providers({ children }: { children: ReactNode }) {
   return (
     <QueryClientProvider client={queryClient}>
       {children}
+      <Toaster position="top-center" toastOptions={{ duration: 3000 }} />
     </QueryClientProvider>
   );
 }

@@ -7,7 +7,7 @@ import { useRouter } from 'next/navigation';
 import Link from 'next/link';
 import api from '@/lib/api';
 import { useAuthStore } from '@/stores/authStore';
-import { Input, Button, PublicGuard } from '@/components';
+import { Input, PasswordInput, Button, PublicGuard } from '@/components';
 import type { LoginRequest, LoginResponse } from '@/types';
 
 export default function LoginPage() {
@@ -19,7 +19,7 @@ export default function LoginPage() {
     register,
     handleSubmit,
     formState: { errors },
-  } = useForm<LoginRequest>({ mode: 'onTouched' });
+  } = useForm<LoginRequest>();
 
   const loginMutation = useMutation({
     mutationFn: (data: LoginRequest) =>
@@ -60,22 +60,23 @@ export default function LoginPage() {
             {...register('email', {
               required: '이메일을 입력해주세요.',
             })}
+            onBlur={() => setServerError('')}
           />
 
-          <Input
+          <PasswordInput
             id="password"
             label="비밀번호"
             required
-            type="password"
             placeholder="비밀번호를 입력하세요"
             error={errors.password?.message}
             {...register('password', {
               required: '비밀번호를 입력해주세요.',
             })}
+            onBlur={() => setServerError('')}
           />
 
           {serverError && (
-            <p className="text-red-500 text-sm text-center">{serverError}</p>
+            <p className="text-red-500 text-sm">{serverError}</p>
           )}
 
           <Button type="submit" loading={loginMutation.isPending}>

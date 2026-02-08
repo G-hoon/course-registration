@@ -12,7 +12,7 @@ export default function Header() {
   return (
     <header className="flex justify-end items-center gap-2 mb-2">
       <span className="text-xs text-gray-500">
-        {user.name} {user.role === 'INSTRUCTOR' ? '강사 님' : '님'}
+        {user.name}{user.role === 'INSTRUCTOR' ? ' 강사님' : '님'}
       </span>
       <button
         onClick={() => {

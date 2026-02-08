@@ -6,15 +6,14 @@ import { useMutation } from '@tanstack/react-query';
 import { useRouter } from 'next/navigation';
 import Link from 'next/link';
 import api from '@/lib/api';
-import { useAuthStore } from '@/stores/authStore';
+import { setSignupCredentials } from '@/lib/signupCredentials';
 import { validatePassword, validateEmail, validatePhone } from '@/lib/validate';
 import { formatPhone } from '@/lib/format';
-import { Input, Button, Radio, PublicGuard } from '@/components';
-import type { LoginResponse, SignupRequest } from '@/types';
+import { Input, PasswordInput, Button, Radio, PublicGuard } from '@/components';
+import type { SignupRequest } from '@/types';
 
 export default function SignupPage() {
   const router = useRouter();
-  const setUser = useAuthStore((state) => state.setUser);
   const [serverError, setServerError] = useState('');
 
   const {
@@ -33,19 +32,11 @@ export default function SignupPage() {
   });
 
   const signupMutation = useMutation({
-    mutationFn: async (data: SignupRequest) => {
-      await api.post('users/signup', { json: data }).json();
-
-      // 가입 후 자동 로그인
-      return api
-        .post('users/login', {
-          json: { email: data.email, password: data.password },
-        })
-        .json<LoginResponse>();
-    },
-    onSuccess: (res) => {
-      setUser(res.accessToken, res.user);
-      router.push('/courses');
+    mutationFn: (data: SignupRequest) =>
+      api.post('users/signup', { json: data }).json(),
+    onSuccess: (_, data) => {
+      setSignupCredentials(data.email, data.password);
+      router.push('/signup/complete');
     },
     onError: async (err: unknown) => {
       const error = err as { response?: Response };
@@ -110,11 +101,10 @@ export default function SignupPage() {
             }}
           />
 
-          <Input
+          <PasswordInput
             id="password"
             label="비밀번호"
             required
-            type="password"
             placeholder="영문, 숫자 조합 6~10자"
             error={errors.password?.message}
             {...register('password', {

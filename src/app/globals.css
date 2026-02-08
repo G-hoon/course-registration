@@ -21,7 +21,28 @@ body {
 button {
   cursor: pointer;
 }
+@layer utilities {
+  .h-real-screen {
+    height: 100vh;
+    height: 100dvh;
+    height: calc(var(--vh, 1vh) * 100);
+  }
 
-.page-title {
-  @apply text-2xl font-bold text-center mb-8;
+  .min-h-real-screen {
+    min-height: 100vh;
+    min-height: 100dvh;
+    min-height: calc(var(--vh, 1vh) * 100);
+  }
+
+  .max-h-real-screen {
+    max-height: 100vh;
+    max-height: 100dvh;
+    max-height: calc(var(--vh, 1vh) * 100);
+  }
+}
+
+@layer components {
+  .page-title {
+    @apply text-2xl font-bold text-center mb-8;
+  }
 }

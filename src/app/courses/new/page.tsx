@@ -1,14 +1,11 @@
 'use client';
 
-import { useState } from 'react';
 import { useForm } from 'react-hook-form';
-import { useMutation } from '@tanstack/react-query';
-import { useRouter } from 'next/navigation';
-import { getAuthApi } from '@/lib/api';
 import { useAuthStore } from '@/stores/authStore';
+import { useModalStore } from '@/stores/modalStore';
 import { Input, Button, AuthGuard } from '@/components';
 import { formatNumber, parseNumber } from '@/lib/format';
-import type { CreateCourseRequest, Course } from '@/types';
+import CreateCourseConfirmModal from './CreateCourseConfirmModal';
 
 interface CourseFormValues {
   title: string;
@@ -17,9 +14,8 @@ interface CourseFormValues {
 }
 
 export default function NewCoursePage() {
-  const router = useRouter();
   const { user, token } = useAuthStore();
-  const [serverError, setServerError] = useState('');
+  const showModal = useModalStore((s) => s.showModal);
 
   const {
     register,
@@ -34,32 +30,18 @@ export default function NewCoursePage() {
     },
   });
 
-  const createMutation = useMutation({
-    mutationFn: (data: CreateCourseRequest) => {
-      const authApi = getAuthApi(token!);
-      return authApi.post('courses', { json: data }).json<Course>();
-    },
-    onSuccess: () => {
-      router.push('/courses');
-    },
-    onError: async (err: unknown) => {
-      const error = err as { response?: Response };
-      if (error.response) {
-        const body = await error.response.json();
-        setServerError(body.message || '강의 개설에 실패했습니다.');
-      } else {
-        setServerError('서버에 연결할 수 없습니다.');
-      }
-    },
-  });
-
   const onSubmit = (data: CourseFormValues) => {
-    setServerError('');
-    createMutation.mutate({
-      title: data.title,
-      instructorName: user!.name,
-      maxStudents: parseNumber(data.maxStudents),
-      price: parseNumber(data.price),
+    showModal({
+      component: CreateCourseConfirmModal,
+      props: {
+        data: {
+          title: data.title,
+          instructorName: user!.name,
+          maxStudents: parseNumber(data.maxStudents),
+          price: parseNumber(data.price),
+        },
+        token: token!,
+      },
     });
   };
 
@@ -130,11 +112,7 @@ export default function NewCoursePage() {
             }}
           />
 
-          {serverError && (
-            <p className="text-red-500 text-sm text-center">{serverError}</p>
-          )}
-
-          <Button type="submit" loading={createMutation.isPending}>
+          <Button type="submit">
             강의 개설하기
           </Button>
         </form>
