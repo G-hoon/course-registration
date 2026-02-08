@@ -12,6 +12,7 @@
   },
   "dependencies": {
     "@tanstack/react-query": "^5.90.20",
+    "es-hangul": "^2.3.8",
     "framer-motion": "^12.33.0",
     "ky": "^1.14.3",
     "lucide-react": "^0.563.0",
