@@ -7,22 +7,13 @@ import { useRouter } from 'next/navigation';
 import { getAuthApi } from '@/lib/api';
 import { useAuthStore } from '@/stores/authStore';
 import { Input, Button, AuthGuard } from '@/components';
+import { formatNumber, parseNumber } from '@/lib/format';
 import type { CreateCourseRequest, Course } from '@/types';
 
 interface CourseFormValues {
   title: string;
   maxStudents: string;
   price: string;
-}
-
-function formatNumber(value: string) {
-  const digits = value.replace(/[^\d]/g, '');
-  if (!digits) return '';
-  return Number(digits).toLocaleString();
-}
-
-function parseNumber(value: string) {
-  return Number(value.replace(/,/g, ''));
 }
 
 export default function NewCoursePage() {

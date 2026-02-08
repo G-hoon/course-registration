@@ -8,6 +8,7 @@ import Link from 'next/link';
 import api from '@/lib/api';
 import { useAuthStore } from '@/stores/authStore';
 import { validatePassword, validateEmail, validatePhone } from '@/lib/validate';
+import { formatPhone } from '@/lib/format';
 import { Input, Button, Radio, PublicGuard } from '@/components';
 import type { LoginResponse, SignupRequest } from '@/types';
 
@@ -57,6 +58,10 @@ export default function SignupPage() {
     },
   });
 
+  const phoneField = register('phone', {
+    validate: (v) => validatePhone(v) || true,
+  });
+
   const onSubmit = (data: SignupRequest) => {
     setServerError('');
     signupMutation.mutate(data);
@@ -98,9 +103,11 @@ export default function SignupPage() {
             type="tel"
             placeholder="010-1234-5678"
             error={errors.phone?.message}
-            {...register('phone', {
-              validate: (v) => validatePhone(v) || true,
-            })}
+            {...phoneField}
+            onChange={(e) => {
+              e.target.value = formatPhone(e.target.value);
+              phoneField.onChange(e);
+            }}
           />
 
           <Input
