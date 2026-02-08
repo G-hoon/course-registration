@@ -45,4 +45,8 @@ button {
   .page-title {
     @apply text-2xl font-bold text-center mb-8;
   }
+
+  .modal-error {
+    @apply mt-4 text-xs text-red-500 rounded-lg p-2 border border-red-500;
+  }
 }

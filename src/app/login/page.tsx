@@ -36,7 +36,7 @@ export default function LoginPage() {
     mutationFn: (data: LoginRequest) => login(data),
     onSuccess: (res) => {
       setUser(res.accessToken, res.user);
-      router.push('/courses');
+      router.replace('/courses');
     },
     onError: async (err: unknown) => {
       const error = err as { response?: Response };
@@ -85,7 +85,7 @@ export default function LoginPage() {
           />
 
           {serverError && (
-            <p className="text-red-500 text-sm">{serverError}</p>
+            <p className="text-red-500 text-sm" role="alert">{serverError}</p>
           )}
 
           <Button type="submit" loading={loginMutation.isPending}>

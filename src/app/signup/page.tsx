@@ -119,7 +119,7 @@ export default function SignupPage() {
         </div>
 
         {serverError && (
-          <p className="text-red-500 text-sm text-center">{serverError}</p>
+          <p className="text-red-500 text-sm text-center" role="alert">{serverError}</p>
         )}
 
         <Button type="submit" loading={signupMutation.isPending}>

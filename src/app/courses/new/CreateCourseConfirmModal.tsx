@@ -41,42 +41,40 @@ export default function CreateCourseConfirmModal({
     <div className="bg-white rounded-2xl w-full max-w-[360px] p-6">
       <h2 className="text-lg font-bold mb-4">강의 개설 확인</h2>
 
-      <div className="flex flex-col gap-2 text-sm">
+      <dl className="flex flex-col gap-2 text-sm">
         <div className="flex justify-between">
-          <span className="text-gray-500">강의 제목</span>
-          <span className="font-medium text-right max-w-[200px] truncate">{data.title}</span>
+          <dt className="text-gray-500">강의 제목</dt>
+          <dd className="font-medium text-right max-w-[200px] truncate">{data.title}</dd>
         </div>
         <div className="flex justify-between">
-          <span className="text-gray-500">강사명</span>
-          <span className="font-medium">{data.instructorName}</span>
+          <dt className="text-gray-500">강사명</dt>
+          <dd className="font-medium">{data.instructorName}</dd>
         </div>
         <div className="flex justify-between">
-          <span className="text-gray-500">최대 수강 인원</span>
-          <span className="font-medium">{data.maxStudents.toLocaleString()}명</span>
+          <dt className="text-gray-500">최대 수강 인원</dt>
+          <dd className="font-medium">{data.maxStudents.toLocaleString()}명</dd>
         </div>
         <div className="flex justify-between">
-          <span className="text-gray-500">가격</span>
-          <span className="font-medium">{data.price.toLocaleString()}원</span>
+          <dt className="text-gray-500">가격</dt>
+          <dd className="font-medium">{data.price.toLocaleString()}원</dd>
         </div>
-      </div>
+      </dl>
 
       {error && (
-        <p className="text-red-500 text-xs text-center mt-4">{error}</p>
+        <p className="modal-error" role="alert">{error}</p>
       )}
 
       <div className="flex gap-3 mt-6">
         <button
           type="button"
           onClick={onClose}
-          className="flex-1 py-3 rounded-lg font-medium border border-gray-300 text-gray-700 hover:bg-gray-50 transition-colors"
+          className="py-3 rounded-lg font-medium border border-gray-300 text-gray-700 hover:bg-gray-50 transition-colors"
         >
           취소
         </button>
-        <div className="flex-1">
-          <Button onClick={() => createMutation.mutate()} loading={createMutation.isPending}>
-            개설하기
-          </Button>
-        </div>
+        <Button onClick={() => createMutation.mutate()} loading={createMutation.isPending}>
+          개설하기
+        </Button>
       </div>
     </div>
   );

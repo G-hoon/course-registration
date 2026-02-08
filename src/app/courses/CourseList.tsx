@@ -47,7 +47,7 @@ export default function CourseList({ sort, selectedIds, onToggle }: CourseListPr
       ))}
 
       {isFetchingNextPage && (
-        <p className="text-center text-sm text-gray-400 py-4">불러오는 중...</p>
+        <p className="text-center text-sm text-gray-400 py-4" role="status">불러오는 중...</p>
       )}
 
       <div ref={loadMoreRef} className="h-1" />

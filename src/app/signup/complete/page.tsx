@@ -29,7 +29,7 @@ export default function SignupCompletePage() {
       login({ email: credentials!.email, password: credentials!.password }),
     onSuccess: (res) => {
       setUser(res.accessToken, res.user);
-      router.push('/courses');
+      router.replace('/courses');
     },
   });
 

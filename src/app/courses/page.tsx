@@ -81,6 +81,7 @@ export default function CoursesPage() {
           {SORT_OPTIONS.map((opt) => (
             <Radio
               key={opt.value}
+              name="sort"
               label={opt.label}
               value={opt.value}
               checked={sort === opt.value}
