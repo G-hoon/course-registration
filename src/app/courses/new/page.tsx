@@ -1,6 +1,8 @@
 'use client';
 
+import { useEffect } from 'react';
 import { useForm } from 'react-hook-form';
+import { useRouter } from 'next/navigation';
 import { useAuthStore } from '@/stores/authStore';
 import { useModalStore } from '@/stores/modalStore';
 import { Input, Button } from '@/components';
@@ -14,6 +16,7 @@ interface CourseFormValues {
 }
 
 export default function NewCoursePage() {
+  const router = useRouter();
   const user = useAuthStore((s) => s.user);
   const showModal = useModalStore((s) => s.showModal);
 
@@ -29,6 +32,14 @@ export default function NewCoursePage() {
       price: '',
     },
   });
+
+  useEffect(() => {
+    if (user && user.role !== 'INSTRUCTOR') {
+      router.replace('/courses');
+    }
+  }, [user, router]);
+
+  if (!user || user.role !== 'INSTRUCTOR') return null;
 
   const onSubmit = (data: CourseFormValues) => {
     showModal({

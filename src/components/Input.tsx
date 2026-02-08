@@ -1,15 +1,15 @@
-import { InputHTMLAttributes, forwardRef } from 'react';
+import { InputHTMLAttributes, ReactNode, forwardRef } from 'react';
 
 interface InputProps extends InputHTMLAttributes<HTMLInputElement> {
   label: string;
   error?: string;
-  suffix?: string;
+  suffix?: ReactNode;
 }
 
 const Input = forwardRef<HTMLInputElement, InputProps>(
   ({ label, error, id, suffix, required, ...props }, ref) => {
     return (
-      <div>
+      <div className="w-full">
         <label htmlFor={id} className="text-sm font-medium mb-1">
           {label}
           {required && <span className="text-orange-500"> *</span>}
@@ -18,13 +18,13 @@ const Input = forwardRef<HTMLInputElement, InputProps>(
           <input
             id={id}
             ref={ref}
-            className={`w-full border rounded-lg px-4 py-3 text-sm focus:outline-none transition-colors
-              ${suffix ? 'pr-10' : ''}
+            className={`w-full border rounded-lg px-4 py-3 text-sm bg-white focus:outline-none transition-colors
+              ${suffix ? 'pr-11' : ''}
               ${error ? 'border-red-500 focus:border-red-500' : 'border-gray-300 focus:border-primary'}`}
             {...props}
           />
           {suffix && (
-            <span className="absolute right-4 top-1/2 -translate-y-1/2 text-sm text-gray-400">
+            <span className="absolute right-3 top-1/2 -translate-y-1/2 text-sm text-gray-400">
               {suffix}
             </span>
           )}

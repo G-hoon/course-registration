@@ -13,16 +13,18 @@ import type { LoginRequest } from '@/types';
 
 export default function LoginPage() {
   const router = useRouter();
-  const setUser = useAuthStore((state) => state.setUser);
+  const setUser = useAuthStore((s) => s.setUser);
+  const logout = useAuthStore((s) => s.logout);
   const [serverError, setServerError] = useState('');
 
   useEffect(() => {
     const params = new URLSearchParams(window.location.search);
     if (params.get('reason') === 'unauthenticated') {
+      logout();
       toast.error('로그인 후 이용해주세요.');
       window.history.replaceState(null, '', '/login');
     }
-  }, []);
+  }, [logout]);
 
   const {
     register,
@@ -53,7 +55,7 @@ export default function LoginPage() {
   };
 
   return (
-      <div>
+      <div className="flex-1 flex flex-col justify-center">
         <h1 className="page-title">로그인</h1>
 
         <form onSubmit={handleSubmit(onSubmit)} className="flex flex-col gap-5">

@@ -58,81 +58,81 @@ export default function SignupPage() {
   };
 
   return (
-      <div>
-        <h1 className="page-title">회원 가입</h1>
+    <div className="flex-1 flex flex-col justify-center">
+      <h1 className="page-title">회원 가입</h1>
 
-        <form onSubmit={handleSubmit(onSubmit)} className="flex flex-col gap-5">
-          <Input
-            id="name"
-            label="이름"
-            required
-            placeholder="홍길동"
-            error={errors.name?.message}
-            {...register('name', {
-              required: '이름을 입력해주세요.',
-            })}
-          />
+      <form onSubmit={handleSubmit(onSubmit)} className="flex flex-col gap-5">
+        <Input
+          id="name"
+          label="이름"
+          required
+          placeholder="홍길동"
+          error={errors.name?.message}
+          {...register('name', {
+            required: '이름을 입력해주세요.',
+          })}
+        />
 
-          <Input
-            id="email"
-            label="이메일"
-            required
-            type="email"
-            placeholder="hong@weolbu.com"
-            error={errors.email?.message}
-            {...register('email', {
-              validate: (v) => validateEmail(v) || true,
-            })}
-          />
+        <Input
+          id="email"
+          label="이메일"
+          required
+          type="email"
+          placeholder="hong@weolbu.com"
+          error={errors.email?.message}
+          {...register('email', {
+            validate: (v) => validateEmail(v) || true,
+          })}
+        />
 
-          <Input
-            id="phone"
-            label="휴대폰 번호"
-            required
-            type="tel"
-            placeholder="010-1234-5678"
-            error={errors.phone?.message}
-            {...phoneField}
-            onChange={(e) => {
-              e.target.value = formatPhone(e.target.value);
-              phoneField.onChange(e);
-            }}
-          />
+        <Input
+          id="phone"
+          label="휴대폰 번호"
+          required
+          type="tel"
+          placeholder="010-1234-5678"
+          error={errors.phone?.message}
+          {...phoneField}
+          onChange={(e) => {
+            e.target.value = formatPhone(e.target.value);
+            phoneField.onChange(e);
+          }}
+        />
 
-          <PasswordInput
-            id="password"
-            label="비밀번호"
-            required
-            placeholder="영문, 숫자 조합 6~10자"
-            error={errors.password?.message}
-            {...register('password', {
-              validate: (v) => validatePassword(v) || true,
-            })}
-          />
+        <PasswordInput
+          id="password"
+          label="비밀번호"
+          required
+          placeholder="영문, 숫자 조합 6~10자"
+          error={errors.password?.message}
+          {...register('password', {
+            validate: (v) => validatePassword(v) || true,
+          })}
+        />
 
-          <div>
-            <p className="text-sm font-medium mb-2">회원 유형</p>
-            <div className="flex gap-6">
-              <Radio label="수강생" value="STUDENT" {...register('role')} />
-              <Radio label="강사" value="INSTRUCTOR" {...register('role')} />
-            </div>
+        <div className="w-full">
+          <p className="text-sm font-medium mb-2">회원 유형</p>
+          <div className="flex gap-6">
+            <Radio label="수강생" value="STUDENT" {...register('role')} />
+            <Radio label="강사" value="INSTRUCTOR" {...register('role')} />
           </div>
+        </div>
 
-          {serverError && (
-            <p className="text-red-500 text-sm text-center">{serverError}</p>
-          )}
+        {serverError && (
+          <p className="text-red-500 text-sm text-center">{serverError}</p>
+        )}
 
-          <Button type="submit" loading={signupMutation.isPending}>
-            가입하기
-          </Button>
+        <Button type="submit" loading={signupMutation.isPending}>
+          가입하기
+        </Button>
 
-          <p className="text-center text-sm text-gray-500">
-            이미 계정이 있으신가요?{' '}
-            <Link href="/login" className="text-primary hover:underline">
-              로그인
-            </Link>
-          </p>
-        </form>
-      </div>
+        <p className="text-center text-sm text-gray-500">
+          이미 계정이 있으신가요?{' '}
+          <Link href="/login" className="text-primary hover:underline">
+            로그인
+          </Link>
+        </p>
+      </form>
+    </div>
   );
 }

@@ -1,6 +1,7 @@
 'use client';
 
 import { useRouter } from 'next/navigation';
+import toast from 'react-hot-toast';
 import { useAuthStore } from '@/stores/authStore';
 
 export default function Header() {
@@ -17,6 +18,7 @@ export default function Header() {
       <button
         onClick={() => {
           useAuthStore.getState().logout();
+          toast.success('로그아웃이 성공했습니다.');
           router.push('/login');
         }}
         className="text-xs text-gray-400 hover:text-gray-600"
