@@ -1,5 +1,5 @@
-import api from './client';
-import type { CourseListResponse } from '@/types';
+import api from "./client";
+import type { CourseListResponse } from "@/types";
 
 type GetCoursesParams = {
   page: number;
@@ -14,6 +14,6 @@ type GetCoursesParams = {
  */
 export function getCourses(params: GetCoursesParams) {
   return api
-    .get('courses', { searchParams: params })
+    .get("courses", { searchParams: params })
     .json<CourseListResponse>();
 }

@@ -6,6 +6,7 @@ import { motion } from 'framer-motion';
 import { useRouter } from 'next/navigation';
 import { useAuthStore } from '@/stores/authStore';
 import { useModalStore } from '@/stores/modalStore';
+import { PAGE_SIZE } from '@/lib/constants';
 import { Radio, Button } from '@/components';
 import CourseCardSkeleton from './CourseCardSkeleton';
 import CourseList from './CourseList';
@@ -21,7 +22,7 @@ const SORT_OPTIONS: { value: SortType; label: string }[] = [
   { value: 'rate', label: '신청률 높은순' },
 ];
 
-function CourseListSkeleton({ length = 10 }: { length?: number }) {
+function CourseListSkeleton({ length = PAGE_SIZE }: { length?: number }) {
   return (
     <div className="flex flex-col gap-3 flex-1">
       {Array.from({ length }).map((_, i) => (
@@ -77,7 +78,6 @@ export default function CoursesPage() {
     <div className="flex flex-col h-full">
       <h1 className="page-title">강의 목록</h1>
 
-      {/* 정렬 */}
       <div className="flex gap-4 mb-4">
         {SORT_OPTIONS.map((opt) => (
           <Radio
@@ -92,7 +92,6 @@ export default function CoursesPage() {
       </div>
 
       {user?.role === 'INSTRUCTOR' && (
-
         <motion.button
           initial={{ height: 0, opacity: 0, padding: 0 }}
           animate={{ height: 100, opacity: 1, padding: 16 }}
@@ -104,12 +103,10 @@ export default function CoursesPage() {
         </motion.button>
       )}
 
-      {/* 강의 목록 */}
-      <Suspense key={sort} fallback={<CourseListSkeleton length={10} />}>
+      <Suspense key={sort} fallback={<CourseListSkeleton />}>
         <CourseList sort={sort} selectedIds={selectedIds} onToggle={toggleSelect} />
       </Suspense>
 
-      {/* 수강 신청 버튼 */}
       {selectedIds.size > 0 && (
         <div className="sticky bottom-0 pt-3 pb-2 bg-[#f5f5f5]">
           <Button onClick={handleEnroll}>

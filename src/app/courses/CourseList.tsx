@@ -3,9 +3,9 @@
 import { useCallback } from 'react';
 import { useSuspenseInfiniteQuery } from '@tanstack/react-query';
 import { getCourses } from '@/lib/api';
+import { PAGE_SIZE } from '@/lib/constants';
 import { useIntersectionObserver } from '@/hooks/useIntersectionObserver';
 import CourseCard from './CourseCard';
-const PAGE_SIZE = 10;
 
 interface CourseListProps {
   sort: string;
@@ -22,6 +22,7 @@ export default function CourseList({ sort, selectedIds, onToggle }: CourseListPr
       getNextPageParam: (lastPage) =>
         lastPage.last ? undefined : lastPage.pageable.pageNumber + 1,
       initialPageParam: 0,
+      retry: 1,
     });
 
   const courses = data.pages.flatMap((p) => p.content).filter(
@@ -34,6 +35,14 @@ export default function CourseList({ sort, selectedIds, onToggle }: CourseListPr
     }, [fetchNextPage]),
     enabled: !!hasNextPage && !isFetchingNextPage,
   });
+
+  if (courses.length === 0) {
+    return (
+      <div className="flex items-center justify-center flex-1">
+        <p className="text-sm text-gray-400">등록된 강의가 없습니다.</p>
+      </div>
+    );
+  }
 
   return (
     <div className="flex flex-col gap-3 flex-1">
