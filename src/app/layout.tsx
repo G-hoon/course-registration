@@ -26,12 +26,10 @@ export default function RootLayout({
     <html lang="ko" className={pretendard.variable}>
       <body>
         <Providers>
-          <div className="min-h-screen flex flex-col">
-            <main className="flex-1 flex flex-col w-full max-w-[600px] mx-auto px-4 py-6">
-              <Header />
-              {children}
-            </main>
-          </div>
+          <main className="flex-1 flex flex-col h-real-screen w-full max-w-[600px] mx-auto px-4 py-6">
+            <Header />
+            {children}
+          </main>
           <ClientOnly>
             <Suspense>
               <ModalRenderer />

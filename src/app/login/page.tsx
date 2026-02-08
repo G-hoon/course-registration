@@ -20,8 +20,11 @@ export default function LoginPage() {
   useEffect(() => {
     const params = new URLSearchParams(window.location.search);
     if (params.get('reason') === 'unauthenticated') {
+      const hadSession = !!useAuthStore.getState().token;
       logout();
-      toast.error('로그인 후 이용해주세요.');
+      if (hadSession) {
+        toast.error('로그인 후 이용해주세요.');
+      }
       window.history.replaceState(null, '', '/login');
     }
   }, [logout]);
